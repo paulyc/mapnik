@@ -759,7 +759,7 @@ def Parser(version):
 
     op.add_option('-j', '--jobs',
                   nargs=1, type="int",
-                  dest="num_jobs", default=1,
+                  dest="num_jobs", default=4,
                   action="store",
                   help="Allow N jobs at once.",
                   metavar="N")

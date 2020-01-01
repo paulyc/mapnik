@@ -1,11 +1,11 @@
 OS := $(shell uname -s)
 
 ifeq ($(JOBS),)
-	JOBS:=1
+	JOBS:=4
 endif
 
 ifeq ($(HEAVY_JOBS),)
-	HEAVY_JOBS:=1
+	HEAVY_JOBS:=4
 endif
 
 all: mapnik
