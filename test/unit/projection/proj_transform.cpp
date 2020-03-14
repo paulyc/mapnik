@@ -6,6 +6,7 @@
 
 #ifdef MAPNIK_USE_PROJ4
 // proj4
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
 #include <proj_api.h>
 #endif
 

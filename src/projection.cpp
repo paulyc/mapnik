@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  *
  *****************************************************************************/
-
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
 // mapnik
 #include <mapnik/projection.hpp>
 #include <mapnik/util/trim.hpp>
