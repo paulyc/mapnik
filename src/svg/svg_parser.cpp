@@ -32,22 +32,24 @@
 #include <mapnik/util/utf_conv_win.hpp>
 #include <mapnik/util/dasharray_parser.hpp>
 #include <mapnik/util/name_to_int.hpp>
-#pragma GCC diagnostic push
+#include <mapnik/warning.hpp>
+MAPNIK_DISABLE_WARNING_PUSH
 #include <mapnik/warning_ignore_agg.hpp>
 #include "agg_ellipse.h"
 #include "agg_rounded_rect.h"
 #include "agg_span_gradient.h"
 #include "agg_color_rgba.h"
-#pragma GCC diagnostic pop
+MAPNIK_DISABLE_WARNING_POP
 
-#pragma GCC diagnostic push
+#include <mapnik/warning.hpp>
+MAPNIK_DISABLE_WARNING_PUSH
 #include <mapnik/warning_ignore.hpp>
 #include <boost/spirit/home/x3.hpp>
 #include <boost/fusion/adapted/struct.hpp>
 #include <boost/fusion/include/std_pair.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/property_tree/detail/xml_parser_read_rapidxml.hpp>
-#pragma GCC diagnostic pop
+MAPNIK_DISABLE_WARNING_POP
 
 #include <string>
 #include <stdexcept>
@@ -57,24 +59,6 @@
 #include <array>
 
 namespace mapnik { namespace svg {
-
-namespace {
-void print_css(mapnik::css_data & data)
-{
-    for (auto const& kv : data)
-    {
-        std::cerr << std::get<0>(kv) << " {" << std::endl;
-        for (auto const& def : std::get<1>(kv))
-        {
-            auto const& r = std::get<1>(def);
-            std::cerr << "    " << std::get<0>(def) << ":"
-                      << std::string(r.begin(), r.end());
-        }
-        std::cerr << "}" << std::endl;
-    }
-}
-
-}
 
 using util::name_to_int;
 using util::operator"" _case;
@@ -566,7 +550,6 @@ void traverse_tree(svg_parser & parser, rapidxml::xml_node<char> const* node)
                     if (result && first == last && !parser.css_data_.empty())
                     {
                         parser.css_style_ = true;
-                        //print_css(parser.css_data_);
                     }
                 }
             }

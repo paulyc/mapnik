@@ -40,18 +40,23 @@
 #include <mapnik/sse.hpp>
 #endif
 
-#pragma GCC diagnostic push
+#include <mapnik/warning.hpp>
+MAPNIK_DISABLE_WARNING_PUSH
 #include <mapnik/warning_ignore_agg.hpp>
 #include "agg_rendering_buffer.h"
 #include "agg_pixfmt_rgba.h"
 #include "agg_color_rgba.h"
-#pragma GCC diagnostic pop
+MAPNIK_DISABLE_WARNING_POP
 
 // stl
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+
+#if __cplusplus >= 201703L
+#include <execution>
+#endif
 
 namespace mapnik
 {
@@ -420,19 +425,18 @@ struct is_solid_visitor
     {
         return true;
     }
-
     template <typename T>
-    bool operator() (T const & data) const
+    bool operator() (image_view<T> const& view) const
     {
         using pixel_type = typename T::pixel_type;
-        if (data.width() > 0 && data.height() > 0)
+        if (view.width() > 0 && view.height() > 0)
         {
-            pixel_type const* first_row = data.get_row(0);
+            pixel_type const* first_row = view.get_row(0);
             pixel_type const first_pixel = first_row[0];
-            for (std::size_t y = 0; y < data.height(); ++y)
+            for (std::size_t y = 0; y < view.height(); ++y)
             {
-                pixel_type const * row = data.get_row(y);
-                for (std::size_t x = 0; x < data.width(); ++x)
+                pixel_type const * row = view.get_row(y);
+                for (std::size_t x = 0; x < view.width(); ++x)
                 {
                     if (first_pixel != row[x])
                     {
@@ -440,6 +444,24 @@ struct is_solid_visitor
                     }
                 }
             }
+        }
+        return true;
+    }
+
+    template <typename T>
+    bool operator() (T const& image) const
+    {
+        using pixel_type = typename T::pixel_type;
+        if (image.size() > 0)
+        {
+            pixel_type const first_p = *image.begin();
+            auto itr = std::find_if(/*std::execution::par_unseq,*/ // still missing on ubuntu with
+                                                                   // clang++10/libc++ (!)
+                                    image.begin(), image.end(),
+                                    [first_p](pixel_type const p) {
+                                        return first_p != p;
+                                    });
+            return (itr == image.end());
         }
         return true;
     }

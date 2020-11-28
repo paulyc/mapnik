@@ -23,11 +23,12 @@
 
 #include <mapnik/json/properties_generator_grammar.hpp>
 
-#pragma GCC diagnostic push
+#include <mapnik/warning.hpp>
+MAPNIK_DISABLE_WARNING_PUSH
 #include <mapnik/warning_ignore.hpp>
 #include <boost/spirit/include/phoenix.hpp>
 #include <boost/fusion/adapted/std_tuple.hpp>
-#pragma GCC diagnostic pop
+MAPNIK_DISABLE_WARNING_POP
 
 namespace mapnik { namespace json {
 
@@ -69,6 +70,7 @@ properties_generator_grammar<OutputIterator, KeyValueStore>::properties_generato
     boost::spirit::karma::string_type kstring;
     boost::spirit::karma::eps_type eps;
     using boost::phoenix::at_c;
+
     properties = lit('{')
         << -(pair % lit(','))
         << lit('}')
@@ -84,7 +86,6 @@ properties_generator_grammar<OutputIterator, KeyValueStore>::properties_generato
         |
         kstring[_1 = at_c<0>(_val)]
         ;
-
 }
 
 }}

@@ -26,11 +26,13 @@
 #include <mapnik/value/types.hpp>
 #include <mapnik/value.hpp>
 
-#pragma GCC diagnostic push
+#include <mapnik/warning.hpp>
+MAPNIK_DISABLE_WARNING_PUSH
 #include <mapnik/warning_ignore.hpp>
 #include <boost/spirit/include/karma.hpp>
 #include <boost/spirit/include/phoenix_function.hpp>
-#pragma GCC diagnostic pop
+#include <boost/spirit/home/karma/domain.hpp>
+MAPNIK_DISABLE_WARNING_POP
 
 #include <string>
 #include <tuple>
@@ -50,7 +52,7 @@ struct escaped_string
 
 struct extract_string
 {
-    using result_type = std::tuple<std::string,bool>;
+    using result_type = std::tuple<std::string, bool>;
 
     result_type operator() (mapnik::value const& val) const
     {
@@ -61,18 +63,16 @@ struct extract_string
 
 template <typename OutputIterator, typename KeyValueStore>
 struct properties_generator_grammar
-    : karma::grammar<OutputIterator, KeyValueStore const&()>
+    : karma::grammar<OutputIterator, KeyValueStore()>
 {
     using pair_type = std::tuple<std::string, mapnik::value>;
     properties_generator_grammar();
     // rules
-    karma::rule<OutputIterator, KeyValueStore const&()> properties;
+    karma::rule<OutputIterator, KeyValueStore()> properties;
     karma::rule<OutputIterator, pair_type()> pair;
     karma::rule<OutputIterator, std::tuple<std::string,bool>()> value;
-    karma::rule<OutputIterator, mapnik::value_null()> value_null_;
-    karma::rule<OutputIterator, mapnik::value_unicode_string()> ustring;
+    //
     escaped_string<OutputIterator> escaped_string_;
-    typename karma::int_generator<mapnik::value_integer,10, false> int__;
     boost::phoenix::function<extract_string> extract_string_;
     std::string quote_;
 };
